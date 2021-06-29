@@ -29,7 +29,7 @@ def evaluate(line, indentation=0):
         return " " * indentation + evaluation(line)
     else:
         line.split()
-        return " " * indentation + line[0] + " = " + "input()"
+        return " " * indentation + line[0] + " = " + "eval(input())"
 
 
 def PRINT(line, indentation=0):
@@ -42,7 +42,7 @@ def PRINT(line, indentation=0):
 def INPUT(line, indentation=0):
     lst = line.upper().strip().split()
     if "," not in lst:
-        output = " " * indentation + line[line.find("INPUT")+6:].strip() + " = " + "input()"
+        output = " " * indentation + line[line.find("INPUT")+6:].strip() + " = " + "eval(input())"
 
     return output
 
