@@ -1,5 +1,5 @@
 import os
-from pyflakes.api import main as checker
+# from pyflakes.api import main as checker
 
 index = 0
 
@@ -241,3 +241,6 @@ Main(line_List)
 with open(python, "w") as file:
     for item in output_list:
         file.write("%s\n" % item)
+
+code_to_execute = compile("\n".join(output_list), "<string>", "exec")
+exec(code_to_execute)
