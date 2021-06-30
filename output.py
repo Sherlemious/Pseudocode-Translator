@@ -1,5 +1,6 @@
+M = eval(input())
 Count = 0
-X = input()
+X = eval(input())
 while True:
     Cf = 0
     print( "2nd Repeat")
