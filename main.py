@@ -159,6 +159,65 @@ def Main(lines):
                                                         output_list.append(evaluate(line, index))
 
 
+errors = {}
+
+
+def add_error(error_name, line_no="NA"):
+    global errors
+    error_no = len(errors)
+    meta = f"Error #{str(error_no)} on line #{str(line_no)}:"
+    errors[meta] = error_name
+
+
+def detect_errors(lines):
+    operators = ['+', '-', '*', '/']
+    statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'REPEAT', 'IF', 'ENDIF']
+    variables = []
+
+    for l in range(len(lines)):
+        line = lines[l]
+        line = line.upper()
+        if line[-1] in operators:
+            add_error("Missing Variable/Number", l)
+
+        for ch in range(len(line)):
+            if line[ch] == ',':
+                try:
+                    if line[ch - 1] != " ":
+                        line = line[:ch] + " " + line[ch:]
+                    if line[ch + 1] != " ":
+                        line = line[:ch + 1] + " " + line[ch + 1:]
+                except IndexError:
+                    if ch == 0:
+                        add_error("Comma in the beginning of line", ch)
+                    else:
+                        add_error("Comma in the end of line", ch)
+
+    op_counts = {
+        "WHILE": sum('WHILE' in s for s in lines),
+        "FOR": sum('FOR' in s for s in lines),
+        "REPEAT": sum('REPEAT' in s for s in lines),
+        "IF": sum('IF' in s for s in lines),
+    }
+    Closers_counts = {
+        "ENDWHILE": sum('ENDWHILE' in s for s in lines),
+        "NEXT": sum('NEXT' in s for s in lines),
+        "UNTIL": sum('UNTIL' in s for s in lines),
+        "ENDIF": sum('ENDIF' in s for s in lines),
+    }
+
+    if op_counts['WHILE'] > Closers_counts["ENDWHILE"]:
+        add_error("Unclosed WHILE Loop")
+    if op_counts['REPEAT'] > Closers_counts["UNTIL"]:
+        add_error("Unclosed REPEAT Loop")
+    if op_counts['IF'] > Closers_counts["ENDIF"]:
+        add_error("Unclosed IF statement")
+    if op_counts['FOR'] > Closers_counts["NEXT"]:
+        add_error("Unclosed FOR Loop")
+
+
+# print(checker(prog='output.py'))
+
 path = os.path.dirname(__file__)
 path.replace("\\", "/")
 pseudocode = path + "/input.txt"
