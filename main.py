@@ -1,4 +1,5 @@
 import os
+from pyflakes.api import main as checker
 
 index = 0
 
@@ -21,6 +22,7 @@ def condition(statement):
 
 def evaluation(statement):
     statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
+    statement.replace('INT', 'int')
     return statement
 
 
@@ -42,7 +44,7 @@ def PRINT(line, indentation=0):
 def INPUT(line, indentation=0):
     lst = line.upper().strip().split()
     if "," not in lst:
-        output = " " * indentation + line[line.find("INPUT")+6:].strip() + " = " + "eval(input())"
+        output = " " * indentation + line[line.find("INPUT") + 6:].strip() + " = " + "eval(input())"
 
     return output
 
@@ -51,6 +53,7 @@ def WHILE(line, indentation=0):
     global index
     index += 4
     line = line[5:]
+    line = line.upper()
     if line.find("DO") != -1:
         line = line[:line.find("DO")]
     output = " " * indentation + "while" + condition(line) + ":"
@@ -79,6 +82,7 @@ def UNTIL(line, indentation):
 
 def IF(line, indentation):
     global index
+    line = line.upper()
     if line.find("THEN") != -1:
         line = line[:line.find("THEN")]
     index += 4
@@ -93,6 +97,7 @@ def FOR(line, indentation):
     line = line[3:]
     line.strip()
     variable = line[:line.find('=')]
+    line = line.upper()
     start = line[line.find('=') + 1:line.find('TO')].strip()
     end = line[line.find('TO') + 2:].strip()
     output = " " * indentation + "for " + variable + " in range(" + start + end + "):"
@@ -122,37 +127,37 @@ output_list = []
 def Main(lines):
     global index, output_list
     for line in lines:
-        if line[:5] == "WHILE":
+        if line[:5].upper() == "WHILE":
             output_list.append(WHILE(line, index))
         else:
-            if line[:6] == "REPEAT":
+            if line[:6].upper() == "REPEAT":
                 output_list.append(REPEAT(index))
             else:
-                if line[:2] == "IF":
+                if line[:2].upper() == "IF":
                     output_list.append(IF(line, index))
                 else:
-                    if line[:5] == "PRINT":
+                    if line[:5].upper() == "PRINT":
                         output_list.append(PRINT(line, index))
                     else:
-                        if line[:5] == "UNTIL":
+                        if line[:5].upper() == "UNTIL":
                             output_list.extend(UNTIL(line, index))
                         else:
-                            if line[:8] == "ENDWHILE":
+                            if line[:8].upper() == "ENDWHILE":
                                 ENDWHILE()
                             else:
-                                if line[:3] == "FOR":
+                                if line[:3].upper() == "FOR":
                                     output_list.append(FOR(line, index))
                                 else:
-                                    if line[:4] == "NEXT":
+                                    if line[:4].upper() == "NEXT":
                                         NEXT()
                                     else:
-                                        if line[:5] == "ENDIF":
+                                        if line[:5].upper() == "ENDIF":
                                             ENDIF()
                                         else:
-                                            if line[:5] == "ELSE":
+                                            if line[:5].upper() == "ELSE":
                                                 output_list.append(ELSE(index))
                                             else:
-                                                if line[:5] == "INPUT":
+                                                if line[:5].upper() == "INPUT":
                                                     output_list.append(INPUT(line, index))
                                                 else:
                                                     if "=" in line:
@@ -221,7 +226,7 @@ def detect_errors(lines):
 path = os.path.dirname(__file__)
 path.replace("\\", "/")
 pseudocode = path + "/input.txt"
-python = path + "/output.txt"
+python = path + "/output.py"
 
 Main(input_list)
 
