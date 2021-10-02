@@ -1,4 +1,6 @@
+INPUT M
 Count = 0
+PRINT "The Count is:", Count
 X = USERINPUT
 REPEAT
     Cf = 0
@@ -11,3 +13,8 @@ REPEAT
         PRINT Count
 UNTIL Count = X
 PRINT "Done"
+
+Num1 = 47293
+Num2 = 3290
+Result = Num1 + Num2
+PRINT "The result is:", Result
