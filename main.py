@@ -153,7 +153,6 @@ def Main(lines):
             if "=" in line:
                 output_list.append(evaluate(line, index))
 
-
 errors = {}
 
 
@@ -227,6 +226,7 @@ for i in range(len(line_List)):
     line_List[i] = line_List[i].strip()
 
 Main(line_List)
+output_list.append("input(\"Press enter to exit \n\")")
 
 with open(python, "w") as file:
     for item in output_list:
