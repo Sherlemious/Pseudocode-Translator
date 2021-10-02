@@ -226,7 +226,7 @@ for i in range(len(line_List)):
     line_List[i] = line_List[i].strip()
 
 Main(line_List)
-output_list.append("input(\"Press enter to exit \n\")")
+output_list.append("input(\"Press enter to exit \")")
 
 with open(python, "w") as file:
     for item in output_list:
