@@ -19,5 +19,4 @@ Num1 = 47293
 Num2 = 3290
 Result = Num1 + Num2
 print( "The result is:", Result)
-input("Press enter to exit 
-")
+input("Press enter to exit ")
