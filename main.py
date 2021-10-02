@@ -129,39 +129,29 @@ def Main(lines):
     for line in lines:
         if line[:5].upper() == "WHILE":
             output_list.append(WHILE(line, index))
+        elif line[:6].upper() == "REPEAT":
+            output_list.append(REPEAT(index))
+        elif line[:2].upper() == "IF":
+            output_list.append(IF(line, index))
+        elif line[:5].upper() == "PRINT":
+            output_list.append(PRINT(line, index))
+        elif line[:5].upper() == "UNTIL":
+            output_list.extend(UNTIL(line, index))
+        elif line[:8].upper() == "ENDWHILE":
+            ENDWHILE()
+        elif line[:3].upper() == "FOR":
+            output_list.append(FOR(line, index))
+        elif line[:4].upper() == "NEXT":
+            NEXT()
+        elif line[:5].upper() == "ENDIF":
+            ENDIF()
+        elif line[:5].upper() == "ELSE":
+            output_list.append(ELSE(index))
+        elif line[:5].upper() == "INPUT":
+            output_list.append(INPUT(line, index))
         else:
-            if line[:6].upper() == "REPEAT":
-                output_list.append(REPEAT(index))
-            else:
-                if line[:2].upper() == "IF":
-                    output_list.append(IF(line, index))
-                else:
-                    if line[:5].upper() == "PRINT":
-                        output_list.append(PRINT(line, index))
-                    else:
-                        if line[:5].upper() == "UNTIL":
-                            output_list.extend(UNTIL(line, index))
-                        else:
-                            if line[:8].upper() == "ENDWHILE":
-                                ENDWHILE()
-                            else:
-                                if line[:3].upper() == "FOR":
-                                    output_list.append(FOR(line, index))
-                                else:
-                                    if line[:4].upper() == "NEXT":
-                                        NEXT()
-                                    else:
-                                        if line[:5].upper() == "ENDIF":
-                                            ENDIF()
-                                        else:
-                                            if line[:5].upper() == "ELSE":
-                                                output_list.append(ELSE(index))
-                                            else:
-                                                if line[:5].upper() == "INPUT":
-                                                    output_list.append(INPUT(line, index))
-                                                else:
-                                                    if "=" in line:
-                                                        output_list.append(evaluate(line, index))
+            if "=" in line:
+                output_list.append(evaluate(line, index))
 
 
 errors = {}
