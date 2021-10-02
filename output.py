@@ -1,5 +1,7 @@
+input("Press enter to exit ;)")
 M = eval(input())
 Count = 0
+print( "The Count is:", Count)
 X = eval(input())
 while True:
     Cf = 0
@@ -14,3 +16,7 @@ while True:
     if Count == X:
         break
 print( "Done")
+Num1 = 47293
+Num2 = 3290
+Result = Num1 + Num2
+print( "The result is:", Result)
