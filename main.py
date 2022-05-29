@@ -4,6 +4,8 @@ import os
 index = 0
 
 equality = [">", "<", "="]
+operators = ['+', '-', '*', '/']
+statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'REPEAT', 'IF', 'ENDIF', 'PRINT', 'INPUT']
 
 
 def condition(statement):
@@ -35,7 +37,7 @@ def evaluate(line, indentation=0):
 
 
 def PRINT(line, indentation=0):
-    line = line[5:]
+    line = line[5:].strip()
     output = " " * indentation + "print(" + line + ")"
 
     return output
@@ -53,9 +55,9 @@ def WHILE(line, indentation=0):
     global index
     index += 4
     line = line[5:]
-    line = line.upper()
-    if line.find("DO") != -1:
-        line = line[:line.find("DO")]
+    line_temp = line.upper()
+    if line_temp.find("DO") != -1:
+        line = line[:line_temp.find("DO")]
     output = " " * indentation + "while" + condition(line) + ":"
     return output
 
@@ -94,13 +96,12 @@ def IF(line, indentation):
 def FOR(line, indentation):
     global index
     index += 4
-    line = line[3:]
-    line.strip()
-    variable = line[:line.find('=')]
+    line = line[3:].strip()
+    variable = line[:line.find('=')].strip()
     line = line.upper()
     start = line[line.find('=') + 1:line.find('TO')].strip()
     end = line[line.find('TO') + 2:].strip()
-    output = " " * indentation + "for " + variable + " in range(" + start + end + "):"
+    output = " " * indentation + "for " + variable + " in range(" + start +","+ end + "):"
 
     return output
 
@@ -119,6 +120,49 @@ def ELSE(indentation):
     global index
     return " " * (indentation - 4) + "else:"
 
+def initialize_lists_dict(lines):
+    global index
+    out = []
+    lists = []
+    for line in lines:
+        l = line.strip()
+        if l.find('[') != -1:
+            bef_br = l[:l.find('[')].upper()
+
+            flag = False
+            for op in (statements + operators):
+                if bef_br.find(op) != -1:
+                    flag = True
+            if flag:
+                continue
+            name = l[:l.find('[')]
+            if name not in lists:
+                lists.append(name)
+                out.append(name + '={}')
+
+    return out
+
+def initialize_lists_list(lines):
+    global index
+    out = []
+    lists = []
+    for line in lines:
+        l = line.strip()
+        if l.find('[') != -1:
+            bef_br = l[:l.find('[')].upper()
+
+            flag = False
+            for op in (statements + operators):
+                if bef_br.find(op) != -1:
+                    flag = True
+            if flag:
+                continue
+            name = l[:l.find('[')]
+            if name not in lists:
+                lists.append(name)
+                out.append(name + '=[0 for i in range(10000)]')
+
+    return out
 
 input_list = []
 output_list = []
@@ -126,6 +170,7 @@ output_list = []
 
 def Main(lines):
     global index, output_list
+    output_list += initialize_lists_dict(lines)
     for line in lines:
         if line[:5].upper() == "WHILE":
             output_list.append(WHILE(line, index))
@@ -156,6 +201,7 @@ def Main(lines):
 errors = {}
 
 
+
 def add_error(error_name, line_no="NA"):
     global errors
     error_no = len(errors)
@@ -164,8 +210,6 @@ def add_error(error_name, line_no="NA"):
 
 
 def detect_errors(lines):
-    operators = ['+', '-', '*', '/']
-    statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'REPEAT', 'IF', 'ENDIF']
     variables = []
 
     for l in range(len(lines)):
