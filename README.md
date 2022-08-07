@@ -13,7 +13,9 @@ If you liked it, please don't forget to star this repository. Thanks!
 
 
 ## How to use
-
+# To Run
+Type your code into the input.txt file
+Run the main.py file and your code should run
 ### Syntax
 Assigning a value to a variable
   ```
