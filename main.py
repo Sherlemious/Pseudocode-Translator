@@ -29,6 +29,8 @@ def evaluation(statement):
 
 
 def evaluate(line, indentation=0):
+    while '] [' in line:
+        line = line.replace('] [', '][')
     if line.upper().find("USERINPUT") == -1:
         return " " * indentation + evaluation(line)
     else:
@@ -105,6 +107,8 @@ def FOR(line, indentation):
 
     return output
 
+def DECLARE():
+    pass
 
 def NEXT():
     global index
@@ -159,9 +163,12 @@ def initialize_lists_list(lines):
                 continue
             name = l[:l.find('[')]
             if name not in lists:
-                lists.append(name)
-                out.append(name + '=[0 for i in range(10000)]')
-
+                if line.find("][") == -1 and line.find("] [") == -1:
+                    lists.append(name)
+                    out.append(name + '=[0 for i in range(1000)]')
+                else:
+                    lists.append(name)
+                    out.append(name + '=[[0 for i in range(1000)] for f in range(1000)]')
     return out
 
 input_list = []
@@ -170,7 +177,7 @@ output_list = []
 
 def Main(lines):
     global index, output_list
-    output_list += initialize_lists_dict(lines)
+    output_list += initialize_lists_list(lines)
     for line in lines:
         if line[:5].upper() == "WHILE":
             output_list.append(WHILE(line, index))
@@ -194,6 +201,8 @@ def Main(lines):
             output_list.append(ELSE(index))
         elif line[:5].upper() == "INPUT":
             output_list.append(INPUT(line, index))
+        elif line[:7].upper() == "DECLARE":
+            DECLARE()
         else:
             if "=" in line:
                 output_list.append(evaluate(line, index))
