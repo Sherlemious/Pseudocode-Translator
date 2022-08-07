@@ -1,6 +1,7 @@
 DECLARE Mkwkokd
 INPUT M
 Count = 0
+// PRINT "Hello"
 PRINT "The Count is:", Count
 X = USERINPUT
 REPEAT
