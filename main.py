@@ -203,6 +203,8 @@ def Main(lines):
             output_list.append(INPUT(line, index))
         elif line[:7].upper() == "DECLARE":
             DECLARE()
+        elif line[:1].upper() == "//":
+            continue
         else:
             if "=" in line:
                 output_list.append(evaluate(line, index))
