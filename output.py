@@ -1,4 +1,5 @@
-arr={}
+arr=[0 for i in range(1000)]
+m=[[0 for i in range(1000)] for f in range(1000)]
 M = eval(input())
 Count = 0
 print("The Count is:", Count)
@@ -29,4 +30,6 @@ print(arr[4])
 for i in range(0,5):
     arr[i] = i
     print(arr[i])
+m[0][1] = 5
+print(m[0][1])
 input("Press enter to exit ")
