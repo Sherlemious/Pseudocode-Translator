@@ -1,3 +1,4 @@
+DECLARE Mkwkokd
 INPUT M
 Count = 0
 PRINT "The Count is:", Count
@@ -13,7 +14,6 @@ REPEAT
         PRINT Count
 UNTIL Count = X
 PRinT "Done"
-
 Num1 = 47293
 Num2 = 3290
 Result = Num1 + Num2
@@ -31,3 +31,5 @@ For i = 0 To 5
     arr[i] = i
     PRINT arr[i]
 Next i
+m[0] [1] = 5
+PRINT m[0][1]
