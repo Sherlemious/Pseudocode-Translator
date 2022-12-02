@@ -75,7 +75,7 @@ A conditional statement that carries out a number of statements between the IF s
   PRINT "HELLO WORLD !"
   I = I + 1
   ELSE
-  "Print Hello"
+  Print Hello
   ENDIF
   ```
 (The 'THEN' keyword is optional)
