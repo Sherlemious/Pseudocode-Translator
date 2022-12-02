@@ -86,9 +86,9 @@ def UNTIL(line, indentation):
 
 def IF(line, indentation):
     global index
-    line = line.upper()
-    if line.find("THEN") != -1:
-        line = line[:line.find("THEN")]
+    ln = line.upper()
+    if ln.find("THEN") != -1:
+        line = line[:ln.find("THEN")]
     index += 4
     line = line[2:]
     output = " " * indentation + "if" + condition(line) + ":"
