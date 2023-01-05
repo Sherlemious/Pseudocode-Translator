@@ -1,4 +1,5 @@
 import os
+
 # from pyflakes.api import main as checker
 
 index = 0
@@ -34,8 +35,8 @@ def evaluate(line, indentation=0):
     if line.upper().find("USERINPUT") == -1:
         return " " * indentation + evaluation(line)
     else:
-        line.split()
-        return " " * indentation + line[0] + " = " + "eval(input())"
+        var = line.split('=')[0].strip()
+        return " " * indentation + var + " = " + "eval(input())"
 
 
 def PRINT(line, indentation=0):
@@ -103,12 +104,14 @@ def FOR(line, indentation):
     line = line.upper()
     start = line[line.find('=') + 1:line.find('TO')].strip()
     end = line[line.find('TO') + 2:].strip()
-    output = " " * indentation + "for " + variable + " in range(" + start +","+ end + "):"
+    output = " " * indentation + "for " + variable + " in range(" + start + "," + end + "):"
 
     return output
 
+
 def DECLARE():
     pass
+
 
 def NEXT():
     global index
@@ -123,6 +126,7 @@ def ENDIF():
 def ELSE(indentation):
     global index
     return " " * (indentation - 4) + "else:"
+
 
 def initialize_lists_dict(lines):
     global index
@@ -145,6 +149,7 @@ def initialize_lists_dict(lines):
                 out.append(name + '={}')
 
     return out
+
 
 def initialize_lists_list(lines):
     global index
@@ -170,6 +175,7 @@ def initialize_lists_list(lines):
                     lists.append(name)
                     out.append(name + '=[[0 for i in range(1000)] for f in range(1000)]')
     return out
+
 
 input_list = []
 output_list = []
@@ -209,8 +215,8 @@ def Main(lines):
             if "=" in line:
                 output_list.append(evaluate(line, index))
 
-errors = {}
 
+errors = {}
 
 
 def add_error(error_name, line_no="NA"):
