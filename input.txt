@@ -1,36 +1,13 @@
-DECLARE Mkwkokd
-INPUT M
-Count = 0
-// PRINT "Hello"
-PRINT "The Count is:", Count
-X = USERINPUT
-REPEAT
-    Cf = 0
-    PRINT "2nd Repeat"
-    REPEAT
-        PRINT "Iter"
-        Cf = Cf + 1
-    UNTIL Cf = 2
-        Count = Count + 1
-        PRINT Count
-UNTIL Count = X
-PRinT "Done"
-Num1 = 47293
-Num2 = 3290
-Result = Num1 + Num2
-PRINT "The result is:", Result
-
-i = 10
-WHILE i > 0
-    PRINT "Iteration" , i
-    i = i - 1
-ENDWHILE
-
-arr[4] = 5
-PRINT arr[4]
-For i = 0 To 5
-    arr[i] = i
-    PRINT arr[i]
-Next i
-m[0] [1] = 5
-PRINT m[0][1]
+num = 16
+Num = Ucase("Hello") + Ucase(" World!")
+Num = Substring(Num,0,1)
+Print Num
+if num = 1234
+print "test completed"
+else
+PRINT "good enough"
+ENDIF
+    INPUT arr[2]
+arr[2] = 17
+arr[2] = userinput
+PRINT arr
