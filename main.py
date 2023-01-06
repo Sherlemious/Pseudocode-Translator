@@ -1,7 +1,5 @@
 import os
 
-# from pyflakes.api import main as checker
-
 index = 0
 
 equality = [">", "<", "="]
@@ -10,6 +8,10 @@ statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'RE
 
 
 def condition(statement):
+    """
+    :param statement: The statement to be evaluated
+    :return: The evaluated statement
+    """
     statement.replace('MOD', '%').replace('DIV', '//').replace('<>', '!=')
     statement.replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
 
@@ -270,8 +272,6 @@ def detect_errors(lines):
     if op_counts['FOR'] > Closers_counts["NEXT"]:
         add_error("Unclosed FOR Loop")
 
-
-# print(checker(prog='output.py'))
 
 path = os.path.dirname(__file__)
 path.replace("\\", "/")
