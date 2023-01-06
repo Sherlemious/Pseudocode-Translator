@@ -24,14 +24,64 @@ def condition(statement):
 
     return statement
 
+def convertUpperLower(statement):
+    temp = statement.lower()
+
+    while 'ucase(' in temp:
+        pos = temp.find('ucase(')
+        closeBracket = temp[pos:].find(')') + pos
+
+        statement = statement[:pos] + statement[pos+6:closeBracket] + '.upper()' + statement[closeBracket+1:]
+        temp = statement.lower()
+
+    while 'lcase(' in temp:
+        pos = temp.find('lcase(')
+        closeBracket = temp[pos:].find(')') + pos
+
+        statement = statement[:pos] + statement[pos+6:closeBracket] + '.lower()' + statement[closeBracket+1:]
+        temp = statement.lower()
+
+    return statement
+
+def subString(statement):
+    """
+    :param statement:
+    :return:
+    substring format: substring(string, start, end)
+    """
+    temp = statement.lower()
+
+    while 'substring(' in temp:
+        pos = temp.find('substring(')
+        firstComma = temp[pos:].find(',') + pos
+        secondComma = temp[firstComma+1:].find(',') + firstComma+1
+        closeBracket = temp[pos:].find(')') + pos
+
+        start = temp[firstComma+1:secondComma].strip()
+        end = temp[secondComma+1:closeBracket].strip()
+
+        statement = statement[:pos] + statement[pos+10:firstComma] + '[' + start + ':' + end + ']' + statement[closeBracket+1:]
+        temp = statement.lower()
+
+    return statement
+
+
 
 def evaluation(statement):
     statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
     statement.replace('INT', 'int')
+    statement.replace('LENGTH', 'len')
+    statement = convertUpperLower(statement)
+    statement = subString(statement)
     return statement
 
 
 def evaluate(line, indentation=0):
+    """
+    :param line: The line to be evaluated
+    :param indentation: The indentation of the line
+    :return: The evaluated line
+    """
     while '] [' in line:
         line = line.replace('] [', '][')
     if line.upper().find("USERINPUT") == -1:
