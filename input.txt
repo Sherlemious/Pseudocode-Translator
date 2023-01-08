@@ -11,3 +11,7 @@ ENDIF
 arr[2] = 17
 arr[2] = userinput
 PRINT arr
+A = "myfile.txt"
+OPEN A FOR READ
+Readfile A, textline
+PRINT textline
