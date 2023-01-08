@@ -1,7 +1,7 @@
 import os
 
 index = 0
-
+noFiles = 0
 equality = [">", "<", "="]
 operators = ['+', '-', '*', '/']
 statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'REPEAT', 'IF', 'ENDIF', 'PRINT', 'INPUT']
@@ -24,6 +24,7 @@ def condition(statement):
 
     return statement
 
+
 def convertUpperLower(statement):
     temp = statement.lower()
 
@@ -31,17 +32,18 @@ def convertUpperLower(statement):
         pos = temp.find('ucase(')
         closeBracket = temp[pos:].find(')') + pos
 
-        statement = statement[:pos] + statement[pos+6:closeBracket] + '.upper()' + statement[closeBracket+1:]
+        statement = statement[:pos] + statement[pos + 6:closeBracket] + '.upper()' + statement[closeBracket + 1:]
         temp = statement.lower()
 
     while 'lcase(' in temp:
         pos = temp.find('lcase(')
         closeBracket = temp[pos:].find(')') + pos
 
-        statement = statement[:pos] + statement[pos+6:closeBracket] + '.lower()' + statement[closeBracket+1:]
+        statement = statement[:pos] + statement[pos + 6:closeBracket] + '.lower()' + statement[closeBracket + 1:]
         temp = statement.lower()
 
     return statement
+
 
 def subString(statement):
     """
@@ -54,17 +56,17 @@ def subString(statement):
     while 'substring(' in temp:
         pos = temp.find('substring(')
         firstComma = temp[pos:].find(',') + pos
-        secondComma = temp[firstComma+1:].find(',') + firstComma+1
+        secondComma = temp[firstComma + 1:].find(',') + firstComma + 1
         closeBracket = temp[pos:].find(')') + pos
 
-        start = temp[firstComma+1:secondComma].strip()
-        end = temp[secondComma+1:closeBracket].strip()
+        start = temp[firstComma + 1:secondComma].strip()
+        end = temp[secondComma + 1:closeBracket].strip()
 
-        statement = statement[:pos] + statement[pos+10:firstComma] + '[' + start + ':' + end + ']' + statement[closeBracket+1:]
+        statement = statement[:pos] + statement[pos + 10:firstComma] + '[' + start + ':' + end + ']' + statement[
+                                                                                                       closeBracket + 1:]
         temp = statement.lower()
 
     return statement
-
 
 
 def evaluation(statement):
@@ -97,6 +99,11 @@ def PRINT(line, indentation=0):
 
     return output
 
+def OUTPUT(line, indentation):
+    line = line[6:].strip()
+    output = " " * indentation + "print(" + line + ")"
+
+    return output
 
 def INPUT(line, indentation=0):
     lst = line.upper().strip().split()
@@ -229,6 +236,40 @@ def initialize_lists_list(lines):
     return out
 
 
+def OPEN(line, indentation):
+    # Format of OPEN statement: OPEN filename FOR Read/Write FOR filename
+    global index
+    index += 4
+    temp = line.upper()
+    readMode = 'w+' if temp.find('WRITE') != -1 else 'r'
+    filename = line.strip().split()[1]
+
+    output = "with open(" + filename + ",'" + readMode + f"') as {filename}:"
+
+    return output
+
+
+def WRITEFILE(line, indentation):
+    # Format: WRITEFILE filename, <variable>
+    output = " " * indentation + "f.write(" + line[line.find(',') + 1:].strip() + ")"
+
+    return output
+
+
+def READFILE(line, indentation):
+    # Format: READFILE filename, <variable>
+    filename = line.strip().split()[1].replace(',', '')
+    output = " " * indentation + line[line.find(',') + 1:].strip() + f" = {filename}.readline()"
+
+    return output
+
+
+def CLOSEFILE():
+    # Format: CLOSEFILE filename
+    global index
+    index -= 4
+
+
 input_list = []
 output_list = []
 
@@ -245,6 +286,8 @@ def Main(lines):
             output_list.append(IF(line, index))
         elif line[:5].upper() == "PRINT":
             output_list.append(PRINT(line, index))
+        elif line[:5].upper() == "OUTPUT":
+            output_list.append(OUTPUT(line, index))
         elif line[:5].upper() == "UNTIL":
             output_list.extend(UNTIL(line, index))
         elif line[:8].upper() == "ENDWHILE":
@@ -261,8 +304,16 @@ def Main(lines):
             output_list.append(INPUT(line, index))
         elif line[:7].upper() == "DECLARE":
             DECLARE()
-        elif line[:1].upper() == "//":
+        elif line[:2].upper() == "//":
             continue
+        elif line[:4].upper() == "OPEN":
+            output_list.append(OPEN(line, index))
+        elif line[:9].upper() == "WRITEFILE":
+            output_list.append(WRITEFILE(line, index))
+        elif line[:8].upper() == "READFILE":
+            output_list.append(READFILE(line, index))
+        elif line[:9].upper() == "CLOSEFILE":
+            CLOSEFILE(index)
         else:
             if "=" in line:
                 output_list.append(evaluate(line, index))
@@ -326,7 +377,7 @@ def detect_errors(lines):
 path = os.path.dirname(__file__)
 path.replace("\\", "/")
 pseudocode = path + "/input.txt"
-python = path + "/output.py"
+pythonCode = path + "/output.py"
 
 Main(input_list)
 
@@ -339,7 +390,7 @@ for i in range(len(line_List)):
 Main(line_List)
 output_list.append("input(\"Press enter to exit \")")
 
-with open(python, "w") as file:
+with open(pythonCode, "w") as file:
     for item in output_list:
         file.write("%s\n" % item)
 
