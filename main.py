@@ -70,7 +70,8 @@ def subString(statement):
 
 
 def evaluation(statement):
-    statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
+    statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace(
+        'NOT', 'not')
     statement = statement.replace('INT', 'int')
     statement = statement.replace('LENGTH', 'len')
     statement = convertUpperLower(statement)
@@ -99,11 +100,13 @@ def PRINT(line, indentation=0):
 
     return output
 
+
 def OUTPUT(line, indentation):
     line = line[6:].strip()
     output = " " * indentation + "print(" + line + ")"
 
     return output
+
 
 def INPUT(line, indentation=0):
     lst = line.upper().strip().split()
@@ -270,6 +273,45 @@ def CLOSEFILE():
     index -= 4
 
 
+def FUNCTION(line, indentation):
+    global index
+    index += 4
+    line = line[9:]
+    c = line.count(':')
+    for _ in range(c-1):
+        line = line[:line.find(':')] + line[line.find(','):]
+    line = line[:line.find(':')] + line[line.find(')'):line.find(')')+1]
+    output = " " * indentation + "def " + line[:line.find(')')+1] + ":"
+    return output
+
+def ENDFUNCTION():
+    global index
+    index -= 4
+
+def RETURN(line, indentation):
+    output = " " * indentation + "return " + line[6:].strip()
+    return output
+
+def CALL(line, indentation):
+    output = " " * indentation + line[4:].strip()
+    return output
+
+def PROCEDURE(line, indentation):  # Same as FUNCTION
+    global index
+    index += 4
+    line = line[9:]
+    c = line.count(':')
+    for _ in range(c-1):
+        line = line[:line.find(':')] + line[line.find(','):]
+    line = line[:line.find(':')] + line[line.find(')'):line.find(')')+1]
+    output = " " * indentation + "def " + line[:line.find(')')+1] + ":"
+    return output
+
+def ENDPROCEDURE():
+    global index
+    index -= 4
+
+
 input_list = []
 output_list = []
 
@@ -314,6 +356,18 @@ def Main(lines):
             output_list.append(READFILE(line, index))
         elif line[:9].upper() == "CLOSEFILE":
             CLOSEFILE(index)
+        elif line[:8].upper() == "FUNCTION":
+            output_list.append(FUNCTION(line, index))
+        elif line[:11].upper() == "ENDFUNCTION":
+            ENDFUNCTION()
+        elif line[:6].upper() == "RETURN":
+            output_list.append(RETURN(line, index))
+        elif line[:4].upper() == "CALL":
+            output_list.append(CALL(line, index))
+        elif line[:9].upper() == "PROCEDURE":
+            output_list.append(PROCEDURE(line, index))
+        elif line[:12].upper() == "ENDPROCEDURE":
+            ENDPROCEDURE()
         else:
             if "=" in line:
                 output_list.append(evaluate(line, index))
