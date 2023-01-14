@@ -47,8 +47,8 @@ def convertUpperLower(statement):
 
 def subString(statement):
     """
-    :param statement:
-    :return:
+    :param statement: String
+    :return: The string with the substring function
     substring format: substring(string, start, end)
     """
     temp = statement.lower()
@@ -70,9 +70,9 @@ def subString(statement):
 
 
 def evaluation(statement):
-    statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
-    statement.replace('INT', 'int')
-    statement.replace('LENGTH', 'len')
+    statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
+    statement = statement.replace('INT', 'int')
+    statement = statement.replace('LENGTH', 'len')
     statement = convertUpperLower(statement)
     statement = subString(statement)
     return statement
