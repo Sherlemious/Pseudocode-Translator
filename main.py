@@ -62,8 +62,8 @@ def subString(statement):
         start = temp[firstComma + 1:secondComma].strip()
         end = temp[secondComma + 1:closeBracket].strip()
 
-        statement = statement[:pos] + statement[pos + 10:firstComma] + '[' + start + ':' + end + ']' + statement[
-                                                                                                       closeBracket + 1:]
+        statement = statement[:pos] + statement[pos + 10:firstComma] + '[' + str(int(start) - 1) + ':' + str(
+            int(start) - 1 + int(end)) + ']' + statement[closeBracket + 1:]
         temp = statement.lower()
 
     return statement
@@ -71,8 +71,10 @@ def subString(statement):
 def evaluation(statement):
     statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace(
         'NOT', 'not')
+    statement = statement.replace('random', 'random.random')
     statement = statement.replace('INT', 'int')
     statement = statement.replace('LENGTH', 'len')
+    statement = statement.replace('length', 'len')
     statement = convertUpperLower(statement)
     statement = subString(statement)
     return statement
@@ -165,7 +167,7 @@ def FOR(line, indentation):
     line = line.upper()
     start = line[line.find('=') + 1:line.find('TO')].strip()
     end = line[line.find('TO') + 2:].strip()
-    output = " " * indentation + "for " + variable + " in range(" + start + "," + end + "):"
+    output = " " * indentation + "for " + variable + " in range(" + str(int(start) - 1) + "," + end + "):"
 
     return output
 
@@ -231,7 +233,7 @@ def initialize_lists_list(lines):
             if name not in lists:
                 if line.find("][") == -1 and line.find("] [") == -1:
                     lists.append(name)
-                    out.append(name + '=[0 for i in range(1000)]')
+                    out.append(name + '[0 for i in range(1000)]')
                 else:
                     lists.append(name)
                     out.append(name + '=[[0 for i in range(1000)] for f in range(1000)]')
@@ -246,14 +248,15 @@ def OPEN(line, indentation):
     readMode = 'w+' if temp.find('WRITE') != -1 else 'r'
     filename = line.strip().split()[1]
 
-    output = "with open(" + filename + ",'" + readMode + f"') as {filename}:"
+    output = " " * indentation + "with open(" + filename + ",'" + readMode + f"') as {filename}:"
 
     return output
 
 
 def WRITEFILE(line, indentation):
     # Format: WRITEFILE filename, <variable>
-    output = " " * indentation + "f.write(" + line[line.find(',') + 1:].strip() + ")"
+    filename = line.strip().split()[1].replace(',', '')
+    output = " " * indentation + filename + ".write(" + line[line.find(',') + 1:].strip() + ")"
 
     return output
 
@@ -277,10 +280,10 @@ def FUNCTION(line, indentation):
     index += 4
     line = line[9:]
     c = line.count(':')
-    for _ in range(c-1):
+    for _ in range(c - 1):
         line = line[:line.find(':')] + line[line.find(','):]
-    line = line[:line.find(':')] + line[line.find(')'):line.find(')')+1]
-    output = " " * indentation + "def " + line[:line.find(')')+1] + ":"
+    line = line[:line.find(':')] + line[line.find(')'):line.find(')') + 1]
+    output = " " * indentation + "def " + line[:line.find(')') + 1] + ":"
     return output
 
 def ENDFUNCTION():
@@ -300,10 +303,10 @@ def PROCEDURE(line, indentation):  # Same as FUNCTION
     index += 4
     line = line[9:]
     c = line.count(':')
-    for _ in range(c-1):
+    for _ in range(c - 1):
         line = line[:line.find(':')] + line[line.find(','):]
-    line = line[:line.find(':')] + line[line.find(')'):line.find(')')+1]
-    output = " " * indentation + "def " + line[:line.find(')')+1] + ":"
+    line = line[:line.find(':')] + line[line.find(')'):line.find(')') + 1]
+    output = " " * indentation + "def " + line[:line.find(')') + 1] + ":"
     return output
 
 def ENDPROCEDURE():
@@ -354,7 +357,7 @@ def Main(lines):
         elif line[:8].upper() == "READFILE":
             output_list.append(READFILE(line, index))
         elif line[:9].upper() == "CLOSEFILE":
-            CLOSEFILE(index)
+            continue
         elif line[:8].upper() == "FUNCTION":
             output_list.append(FUNCTION(line, index))
         elif line[:11].upper() == "ENDFUNCTION":
@@ -439,7 +442,8 @@ with open(pseudocode, "r") as file:
 
 for i in range(len(line_List)):
     line_List[i] = line_List[i].strip()
-
+output_list.append("import random")
+output_list.append("import math")
 Main(line_List)
 output_list.append("input(\"Press enter to exit \")")
 
