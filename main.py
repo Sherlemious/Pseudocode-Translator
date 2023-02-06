@@ -68,7 +68,6 @@ def subString(statement):
 
     return statement
 
-
 def evaluation(statement):
     statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace(
         'NOT', 'not')
