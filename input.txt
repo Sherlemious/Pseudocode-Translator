@@ -1,3 +1,7 @@
+FUNCTION sum(sum1:Integer,Num2:Integer) RETURNS Integer
+    S = sum1+Num2
+    RETURN S
+ENDFUNCTION
 num = 16
 Num = Ucase("Hello") + Ucase(" World!")
 Num = Substring(Num,0,1)
@@ -7,11 +11,8 @@ print "test completed"
 else
 PRINT "good enough"
 ENDIF
-    INPUT arr[2]
-arr[2] = 17
-arr[2] = userinput
+arr[2][1] = 17
+arr[2][2] = userinput
 PRINT arr
-A = "myfile.txt"
-OPEN A FOR READ
-Readfile A, textline
-PRINT textline
+
+PRINT sum(arr[2][1],arr[2][2])
