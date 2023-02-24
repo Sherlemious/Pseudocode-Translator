@@ -12,13 +12,15 @@ def condition(statement):
     :param statement: The statement to be evaluated
     :return: The evaluated statement
     """
-    statement.replace('MOD', '%').replace('DIV', '//').replace('<>', '!=').replace('><', '!=')
-    statement.replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
+    statement = statement.replace('MOD', '%').replace('DIV', '//').replace('<>', '!=').replace('><', '!=')
+    statement = statement.replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
 
     x = len(statement)
     for ch in range(x):
         char = statement[ch]
         if char == "=":
+            if statement[ch-1] == '!':
+                continue
             if statement[ch - 1] not in equality and statement[ch + 1] not in equality:
                 statement = statement[:ch] + "=" + statement[ch:]
 
