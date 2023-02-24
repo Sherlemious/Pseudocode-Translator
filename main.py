@@ -1,10 +1,10 @@
 import os
+import config
 
 index = 0
-noFiles = 0
-equality = [">", "<", "="]
-operators = ['+', '-', '*', '/']
-statements = ['WHILE', 'ENDWHILE', 'FOR', 'NEXT', 'UNTIl', 'REPEAT', 'ELSE', 'REPEAT', 'IF', 'ENDIF', 'PRINT', 'INPUT']
+equality = config.equality
+operators = config.operators
+statements = config.statements
 
 
 def condition(statement):
@@ -12,7 +12,7 @@ def condition(statement):
     :param statement: The statement to be evaluated
     :return: The evaluated statement
     """
-    statement.replace('MOD', '%').replace('DIV', '//').replace('<>', '!=')
+    statement.replace('MOD', '%').replace('DIV', '//').replace('<>', '!=').replace('><', '!=')
     statement.replace('OR', 'or').replace('AND', 'and').replace('NOT', 'not')
 
     x = len(statement)
@@ -26,6 +26,9 @@ def condition(statement):
 
 
 def convertUpperLower(statement):
+    """
+
+    """
     temp = statement.lower()
 
     while 'ucase(' in temp:
@@ -67,6 +70,7 @@ def subString(statement):
         temp = statement.lower()
 
     return statement
+
 
 def evaluation(statement):
     statement = statement.replace('MOD', '%').replace('DIV', '//').replace('OR', 'or').replace('AND', 'and').replace(
@@ -215,28 +219,50 @@ def initialize_lists_dict(lines):
 
 
 def initialize_lists_list(lines):
+    """
+    :param lines, list of lines from the input.txt file
+    :return: list, lines initializing
+    """
     global index
     out = []
-    lists = []
+    undeclaredArrayNames = {}  # Array Names with their corresponding number of rows
+    declaredArrayNames = []
     for line in lines:
-        l = line.strip()
-        if l.find('[') != -1:
-            bef_br = l[:l.find('[')].upper()
+        l = line.strip().replace(' ', '')
+        if l.find('[') == -1:
+            continue
 
-            flag = False
-            for op in (statements + operators):
-                if bef_br.find(op) != -1:
-                    flag = True
-            if flag:
-                continue
-            name = l[:l.find('[')]
-            if name not in lists:
-                if line.find("][") == -1 and line.find("] [") == -1:
-                    lists.append(name)
-                    out.append(name + '[0 for i in range(1000)]')
-                else:
-                    lists.append(name)
-                    out.append(name + '=[[0 for i in range(1000)] for f in range(1000)]')
+        bef_br = l[:l.find('[')].upper()
+
+        flag = False
+        for op in (statements + operators):
+            if bef_br.find(op) != -1:
+                flag = True
+        if flag:
+            continue
+
+        name = l[:l.find('[')]
+
+        if l.find(',') != -1:  # This means that an array is assigned to the variable somewhere in the program
+            # Example x = [1, 2, 3]
+            declaredArrayNames.append(name)
+            continue
+
+        if name not in undeclaredArrayNames:
+            undeclaredArrayNames[name] = 1
+
+        if line.find("][") != -1:
+            undeclaredArrayNames[name] = 2
+
+    for name in undeclaredArrayNames.keys():
+        if name in declaredArrayNames:
+            continue
+
+        if undeclaredArrayNames[name] == 1:
+            out.append(name + '=[0 for i in range(1000)]')
+        else:
+            out.append(name + '=[[0 for i in range(1000)] for f in range(1000)]')
+
     return out
 
 
@@ -286,17 +312,21 @@ def FUNCTION(line, indentation):
     output = " " * indentation + "def " + line[:line.find(')') + 1] + ":"
     return output
 
+
 def ENDFUNCTION():
     global index
     index -= 4
+
 
 def RETURN(line, indentation):
     output = " " * indentation + "return " + line[6:].strip()
     return output
 
+
 def CALL(line, indentation):
     output = " " * indentation + line[4:].strip()
     return output
+
 
 def PROCEDURE(line, indentation):  # Same as FUNCTION
     global index
@@ -309,17 +339,14 @@ def PROCEDURE(line, indentation):  # Same as FUNCTION
     output = " " * indentation + "def " + line[:line.find(')') + 1] + ":"
     return output
 
+
 def ENDPROCEDURE():
     global index
     index -= 4
 
 
-input_list = []
-output_list = []
-
-
-def Main(lines):
-    global index, output_list
+def convertToPython(lines, output_list):
+    global index
     output_list += initialize_lists_list(lines)
     for line in lines:
         if line[:5].upper() == "WHILE":
@@ -375,81 +402,30 @@ def Main(lines):
                 output_list.append(evaluate(line, index))
 
 
-errors = {}
+def main():
+    input_list = []
+    path = os.path.dirname(__file__)
+    path.replace("\\", "/")
+    pseudocode = path + "/input.txt"
+    pythonCode = path + "/output.py"
+
+    with open(pseudocode, "r") as file:
+        line_List = list(file)
+
+    for i in range(len(line_List)):
+        line_List[i] = line_List[i].strip()
+
+    output_list = ["import random", "import math"]
+
+    convertToPython(line_List, output_list)
+    output_list.append("input(\"Press enter to exit \")")
+
+    with open(pythonCode, "w") as file:
+        for item in output_list:
+            file.write("%s\n" % item)
+
+    code_to_execute = compile("\n".join(output_list), "<string>", "exec")
+    exec(code_to_execute)
 
 
-def add_error(error_name, line_no="NA"):
-    global errors
-    error_no = len(errors)
-    meta = f"Error #{str(error_no)} on line #{str(line_no)}:"
-    errors[meta] = error_name
-
-
-def detect_errors(lines):
-    variables = []
-
-    for l in range(len(lines)):
-        line = lines[l]
-        line = line.upper()
-        if line[-1] in operators:
-            add_error("Missing Variable/Number", l)
-
-        for ch in range(len(line)):
-            if line[ch] == ',':
-                try:
-                    if line[ch - 1] != " ":
-                        line = line[:ch] + " " + line[ch:]
-                    if line[ch + 1] != " ":
-                        line = line[:ch + 1] + " " + line[ch + 1:]
-                except IndexError:
-                    if ch == 0:
-                        add_error("Comma in the beginning of line", ch)
-                    else:
-                        add_error("Comma in the end of line", ch)
-
-    op_counts = {
-        "WHILE": sum('WHILE' in s for s in lines),
-        "FOR": sum('FOR' in s for s in lines),
-        "REPEAT": sum('REPEAT' in s for s in lines),
-        "IF": sum('IF' in s for s in lines),
-    }
-    Closers_counts = {
-        "ENDWHILE": sum('ENDWHILE' in s for s in lines),
-        "NEXT": sum('NEXT' in s for s in lines),
-        "UNTIL": sum('UNTIL' in s for s in lines),
-        "ENDIF": sum('ENDIF' in s for s in lines),
-    }
-
-    if op_counts['WHILE'] > Closers_counts["ENDWHILE"]:
-        add_error("Unclosed WHILE Loop")
-    if op_counts['REPEAT'] > Closers_counts["UNTIL"]:
-        add_error("Unclosed REPEAT Loop")
-    if op_counts['IF'] > Closers_counts["ENDIF"]:
-        add_error("Unclosed IF statement")
-    if op_counts['FOR'] > Closers_counts["NEXT"]:
-        add_error("Unclosed FOR Loop")
-
-
-path = os.path.dirname(__file__)
-path.replace("\\", "/")
-pseudocode = path + "/input.txt"
-pythonCode = path + "/output.py"
-
-Main(input_list)
-
-with open(pseudocode, "r") as file:
-    line_List = list(file)
-
-for i in range(len(line_List)):
-    line_List[i] = line_List[i].strip()
-output_list.append("import random")
-output_list.append("import math")
-Main(line_List)
-output_list.append("input(\"Press enter to exit \")")
-
-with open(pythonCode, "w") as file:
-    for item in output_list:
-        file.write("%s\n" % item)
-
-code_to_execute = compile("\n".join(output_list), "<string>", "exec")
-exec(code_to_execute)
+main()
