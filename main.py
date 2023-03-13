@@ -284,7 +284,7 @@ def OPEN(line, indentation):
 def WRITEFILE(line, indentation):
     # Format: WRITEFILE filename, <variable>
     filename = line.strip().split()[1].replace(',', '')
-    output = " " * indentation + filename + ".write(" + line[line.find(',') + 1:].strip() + r"\n)"
+    output = " " * indentation + filename + ".write(" + line[line.find(',') + 1:].strip() + "\n)"
 
     return output
 
