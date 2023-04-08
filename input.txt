@@ -1,18 +1,22 @@
-FUNCTION sum(sum1:Integer,Num2:Integer) RETURNS Integer
-    S = sum1+Num2
-    RETURN S
-ENDFUNCTION
-num = 16
-Num = Ucase("Hello") + Ucase(" World!")
-Num = Substring(Num,0,1)
-Print Num
-if num = 1234
-print "test completed"
-else
-PRINT "good enough"
-ENDIF
-arr[2][1] = 17
-arr[2][2] = userinput
-PRINT arr
+x = [[5,1,2],[1,6,3]]
+t=[0,0]
+avg=[0,0]
+for c1 = 1 to 2
+for c2 = 1 to 3
+ t[c1]=t[c1] + x[c1][c2]
+next
+avg[c1] = t[c1]/3
+print avg[c1]
+next
+n[1][2]=3
+print(n[1][2])
+if x <> 3 then
+print "NO"
+endif
 
-PRINT sum(arr[2][1],arr[2][2])
+// Open a file for writing
+
+x = "Hello World"
+OPEN "test.txt" FOR WRITE
+WRITEFILE "test.txt", x
+PRINT x
