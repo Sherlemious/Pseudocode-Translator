@@ -1,5 +1,6 @@
 import random
 import math
+f0="test.txt"
 t=[[0 for i in range(1000)] for f in range(1000)]
 avg=[0 for i in range(1000)]
 n=[[0 for i in range(1000)] for f in range(1000)]
@@ -15,4 +16,9 @@ n[1][2]=3
 print((n[1][2]))
 if x != 3 :
     print("NO")
+x = "Hello World"
+with open(f0,'w+') as f0:
+    f0.write(x
+)
+    print(x)
 input("Press enter to exit ")

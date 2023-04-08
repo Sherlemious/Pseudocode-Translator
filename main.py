@@ -267,6 +267,26 @@ def initialize_lists_list(lines):
 
     return out
 
+def add_File_Names(lines):
+    fileVariables = []
+    for l in range(len(lines)):
+        line = lines[l]
+        if '/' in line:
+            continue
+        if line.upper().find("OPEN") != -1:
+            fileName = line.strip().split()[1]
+            fileVariable = 'f' + str(len(fileVariables))
+            fileVariables.append(fileVariable + '=' + fileName)
+            lines[lines.index(line)] = line.replace(fileName, fileVariable)
+            for i in range(l + 1, len(lines)):
+                if lines[i].upper().find("WRITEFILE") != -1:
+                    lines[i] = lines[i].replace(fileName, fileVariable)
+                elif lines[i].upper().find("READFILE") != -1:
+                    lines[i] = lines[i].replace(fileName, fileVariable)
+                elif lines[i].upper().find("CLOSE") != -1:
+                    lines[i] = lines[i].replace(fileName, fileVariable)
+
+    return fileVariables
 
 def OPEN(line, indentation):
     # Format of OPEN statement: OPEN filename FOR Read/Write FOR filename
@@ -405,7 +425,6 @@ def convertToPython(lines, output_list):
 
 
 def main():
-    input_list = []
     path = os.path.dirname(__file__)
     path.replace("\\", "/")
     pseudocode = path + "/input.txt"
@@ -418,7 +437,7 @@ def main():
         line_List[i] = line_List[i].strip()
 
     output_list = ["import random", "import math"]
-
+    output_list += add_File_Names(line_List)
     convertToPython(line_List, output_list)
     output_list.append("input(\"Press enter to exit \")")
 
